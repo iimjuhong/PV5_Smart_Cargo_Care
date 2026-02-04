@@ -70,7 +70,6 @@ box_detection/
 │
 ├── models/                 # YOLO 모델 및 스크립트
 │   ├── download_models.py  # 모델 다운로드 스크립트
-│   ├── test_model.py       # 모델 테스트 스크립트
 │   └── waste-classification.pt  # Waste 분류 모델 (기본)
 │
 └── logs/                   # 로그 파일 (자동 생성)
@@ -100,20 +99,7 @@ python models/download_models.py
 - `yolov8n.pt` - 일반 객체 검출 (옵션)
 - `yolov8n-obb.pt` - 회전 바운딩 박스 (옵션)
 
-### 3. 모델 테스트
-
-```bash
-# 웹캠으로 cardboard 검출 테스트
-python models/test_model.py --webcam
-
-# 이미지 파일로 테스트
-python models/test_model.py --image test.jpg
-
-# 모든 클래스 검출
-python models/test_model.py --image test.jpg --all
-```
-
-### 4. 메인 시스템 실행
+### 3. 메인 시스템 실행
 
 ```bash
 python main.py
