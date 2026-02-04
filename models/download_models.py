@@ -88,10 +88,9 @@ def download_yolov8n_obb():
 
 def download_waste_classification():
     """Waste Classification 모델 다운로드 (Hugging Face)"""
-    from ultralytics import YOLO
-
     model_path = MODELS_DIR / "waste-classification.pt"
     hf_model_id = "kendrickfff/waste-classification-yolov8-ken"
+    hf_filename = "yolov8n-waste-12cls-best.pt"
 
     if model_path.exists():
         print(f"[SKIP] waste-classification.pt already exists")
@@ -99,69 +98,25 @@ def download_waste_classification():
 
     print(f"[DOWNLOAD] {hf_model_id} ...")
     try:
-        # Hugging Face에서 모델 로드
-        model = YOLO(hf_model_id)
-
-        # 모델을 로컬에 저장
-        # ultralytics 모델은 export 없이 직접 저장 가능
-        # model.save()는 없으므로 다른 방법 사용
-
-        # Hugging Face 캐시에서 모델 파일 찾기
-        hf_cache = Path.home() / ".cache" / "huggingface" / "hub"
-
-        # 모델 ID로 캐시 디렉토리 찾기
-        found = False
-        for cache_dir in hf_cache.glob("models--kendrickfff--waste-classification-yolov8-ken*"):
-            # snapshots 폴더에서 .pt 파일 찾기
-            for pt_file in cache_dir.rglob("*.pt"):
-                shutil.copy(str(pt_file), str(model_path))
-                print(f"[OK] Copied from HF cache to {model_path}")
-                found = True
-                break
-            if found:
-                break
-
-        if not found:
-            # 직접 다운로드 시도
-            try:
-                from huggingface_hub import hf_hub_download
-                downloaded_path = hf_hub_download(
-                    repo_id=hf_model_id,
-                    filename="best.pt",  # 또는 model.pt
-                    local_dir=str(MODELS_DIR),
-                    local_dir_use_symlinks=False
-                )
-                # 파일명 변경
-                if Path(downloaded_path).exists():
-                    shutil.move(downloaded_path, str(model_path))
-                    print(f"[OK] Downloaded to {model_path}")
-                    found = True
-            except Exception as hf_err:
-                print(f"[WARN] huggingface_hub download failed: {hf_err}")
-
-        if not found:
-            # 마지막 방법: 모델 객체에서 저장
-            print("[INFO] Saving model directly...")
-            # 임시 추론 후 모델 가중치 저장
-            import tempfile
-            import numpy as np
-
-            dummy_img = np.zeros((640, 640, 3), dtype=np.uint8)
-            _ = model(dummy_img, verbose=False)
-
-            # 현재 디렉토리에 다운로드된 파일 확인
-            for f in Path(".").glob("*.pt"):
-                if "waste" in f.name.lower() or "best" in f.name.lower():
-                    shutil.move(str(f), str(model_path))
-                    print(f"[OK] Saved to {model_path}")
-                    found = True
-                    break
-
-        if not found:
-            print(f"[WARN] Model loaded but could not save to {model_path}")
-            print(f"[INFO] You can manually copy the model file to {model_path}")
-
+        from huggingface_hub import hf_hub_download
+        
+        print(f"[INFO] Downloading {hf_filename} from Hugging Face...")
+        downloaded_path = hf_hub_download(
+            repo_id=hf_model_id,
+            filename=hf_filename
+        )
+        
+        # 다운로드된 파일을 models 폴더로 복사
+        import shutil
+        shutil.copy(downloaded_path, str(model_path))
+        print(f"[OK] Saved to {model_path}")
+        
         return True
+        
+    except ImportError:
+        print("[ERROR] huggingface_hub not installed")
+        print("[INFO] Install it with: pip install huggingface_hub")
+        return False
     except Exception as e:
         print(f"[ERROR] Failed to download waste-classification model: {e}")
         return False

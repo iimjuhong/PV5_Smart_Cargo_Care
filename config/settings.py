@@ -49,12 +49,12 @@ def get_env_str(key: str, default: str) -> str:
 # 모델 저장 디렉토리
 MODELS_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "models")
 
-# 기본 YOLO 모델 (일반 객체 검출)
-MODEL_PATH: str = get_env_str("MODEL_PATH", os.path.join(MODELS_DIR, "yolov8n.pt"))
-
-# Waste Classification 모델 (cardboard 등 12개 클래스)
-WASTE_MODEL_PATH: str = get_env_str("WASTE_MODEL_PATH", os.path.join(MODELS_DIR, "waste-classification.pt"))
+# Waste Classification 모델 (cardboard 등 12개 클래스) - 기본 모델
 WASTE_MODEL_HF_ID: str = "kendrickfff/waste-classification-yolov8-ken"
+MODEL_PATH: str = get_env_str("MODEL_PATH", os.path.join(MODELS_DIR, "waste-classification.pt"))
+
+# 기본 YOLO 모델 (일반 객체 검출) - 옵션
+YOLOV8N_MODEL_PATH: str = get_env_str("YOLOV8N_MODEL_PATH", os.path.join(MODELS_DIR, "yolov8n.pt"))
 
 # OBB 모델 (회전 바운딩 박스 - 쓰러짐 감지용)
 OBB_MODEL_PATH: str = get_env_str("OBB_MODEL_PATH", os.path.join(MODELS_DIR, "yolov8n-obb.pt"))

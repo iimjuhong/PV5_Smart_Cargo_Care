@@ -4,7 +4,7 @@
 
 ## 주요 특징
 
-- **실시간 객체 감지**: YOLOv8 모델을 사용한 고정밀 박스 검출
+- **실시간 객체 감지**: Hugging Face waste-classification 모델을 사용한 cardboard 박스 검출
 - **정밀 추적**: Hungarian Algorithm 기반 프레임 간 박스 ID 매칭
 - **지능형 이상 감지**: 위치 급변 및 형태 변형 감지
 - **MCU 통신**: UART를 통한 실시간 경고 전송
@@ -71,9 +71,7 @@ box_detection/
 ├── models/                 # YOLO 모델 및 스크립트
 │   ├── download_models.py  # 모델 다운로드 스크립트
 │   ├── test_model.py       # 모델 테스트 스크립트
-│   ├── yolov8n.pt          # 기본 YOLO 모델
-│   ├── yolov8n-obb.pt      # OBB 모델 (회전 바운딩 박스)
-│   └── waste-classification.pt  # Waste 분류 모델
+│   └── waste-classification.pt  # Waste 분류 모델 (기본)
 │
 └── logs/                   # 로그 파일 (자동 생성)
 ```
@@ -98,9 +96,9 @@ python models/download_models.py
 ```
 
 다운로드되는 모델:
-- `yolov8n.pt` - 기본 객체 검출
-- `yolov8n-obb.pt` - 회전 바운딩 박스 (쓰러짐 감지)
-- `waste-classification.pt` - 폐기물 분류 (cardboard 등 12클래스)
+- `waste-classification.pt` - 폐기물 분류 (cardboard 등 12클래스) - **기본 모델**
+- `yolov8n.pt` - 일반 객체 검출 (옵션)
+- `yolov8n-obb.pt` - 회전 바운딩 박스 (옵션)
 
 ### 3. 모델 테스트
 

@@ -57,10 +57,18 @@ class YOLODetector:
 
         # 모델 파일이 없거나 로드 실패 시 자동 다운로드
         if AUTO_DOWNLOAD_MODEL:
-            logger.info("Model not found. Downloading YOLOv8n model...")
+            logger.info("Model not found. Attempting to download...")
             try:
-                # ultralytics가 자동으로 다운로드
-                self.model = YOLO("yolov8n.pt")
+                # waste-classification 모델인 경우 Hugging Face에서 다운로드
+                if "waste-classification" in self.model_path:
+                    from config.settings import WASTE_MODEL_HF_ID
+                    logger.info(f"Downloading from Hugging Face: {WASTE_MODEL_HF_ID}")
+                    self.model = YOLO(WASTE_MODEL_HF_ID)
+                else:
+                    # 기본 YOLO 모델 다운로드
+                    logger.info("Downloading YOLOv8n model...")
+                    self.model = YOLO("yolov8n.pt")
+                
                 logger.info("Model downloaded successfully")
 
                 # 다운로드된 모델을 models/ 폴더에 복사
